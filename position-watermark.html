@@ -4,14 +4,30 @@
     <meta charset="UTF-8">
     <title>固定位置水印</title>
     <link rel="stylesheet" type="text/css" href="css/watermark.css">
+    <script type="text/javascript" src="js/watermark.js"></script>
 </head>
 <body>
-    <div class="watermark">
-        <div class="position-watermark left-top">禁止复制</div>
+    <div id="watermark-layer" class="watermark">
+        <!-- <div class="position-watermark left-top">禁止复制</div>
         <div class="position-watermark left-bottom">禁止复制</div>
         <div class="position-watermark right-top">禁止复制</div>
         <div class="position-watermark right-bottom">禁止复制</div>
-        <div class="position-watermark center">禁止复制</div>
+        <div class="position-watermark center">禁止复制</div> -->
     </div>
+    <script type="text/javascript">
+        var watermarkDiv = document.getElementById('watermark-layer');
+        // 固定位置文本水印默认配置
+    let POSITION_TEXT_WATERMARK_SETTINGS = {
+        text : '文本水印',
+        color : 'gray',
+        fontFamily : '楷体',
+        fontSize : '16px',
+        opacity : 0.5, // 不透明度（范围 0~1: 0-完全透明，1-完全不透明）
+        format : 'horizontal', // 版式：horizontal-水平，vertical-垂直，oblique-斜式
+        style : 'position', // 水印风格：position-固定位置，repeat-重复
+        positions : ['left-top', 'left-bottom', 'right-top', 'right-bottom', 'center']
+    };
+        new watermark.Text(watermarkDiv, POSITION_TEXT_WATERMARK_SETTINGS).create();
+    </script>
 </body>
 </html>

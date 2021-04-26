@@ -24,7 +24,18 @@
 		this.fontSize = settings.fontSize;
 	}
 	TextWatermark.prototype.create = function() {
+		this.element.setAttribute('class', 'watermark')
+		console.log(this.style);
+		this.style.applyStyle();
+		if (this.style instanceof PositionWatermarkStyle) {
+			let positions = this.style.positions;
+			let html = '';
+			for (let i = 0; i < positions.length; i++) {
+				html =  html + '<div class="position-watermark ' + positions[i] + '">' + this.text + '</div>'
+			}
+		} else if (this.style instanceof RepeatWatermarkStyle) {
 
+		}
 	}
 
 	/*
@@ -35,6 +46,9 @@
 		this.imagePath = settings.imagePath;
 		this.width = settings.width;
 		this.height = settings.height;
+	}
+	ImageWatermark.prototype.create = function() {
+		// 暂未支持
 	}
 
 	/*
@@ -52,6 +66,10 @@
 		WatermarkStyle.call(this, settings);
 		this.positions = settings.positions;
 	}
+	PositionWatermarkStyle.prototype.applyStyle = function() {
+		watermarkCss.set('opacity', this.opacity);
+		watermarkCss.set('rotate', this.rotate);
+	}
 
 	/*
 	 * 重复水印样式
@@ -64,6 +82,14 @@
 		this.ySpace = settings.ySpace;
 		this.xOffset = settings.xOffset;
 		this.yOffset = settings.yOffset;
+	}
+	RepeatWatermarkStyle.prototype.applyStyle = function() {
+		watermarkCss.set('opacity', this.opacity);
+		watermarkCss.set('rotate', this.rotate);
+		watermarkCss.set('--xSpace', this.xSpace);
+		watermarkCss.set('--ySpace', this.ySpace);
+		watermarkCss.set('--xOffset', this.xSpace);
+		watermarkCss.set('--yOffset', this.ySpace);
 	}
 
 	/*
