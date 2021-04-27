@@ -46,6 +46,7 @@
 	-moz-transform: rotate(var(--rotate)); 	/* Firefox */
 	-webkit-transform: rotate(var(--rotate)); /* Safari 和 Chrome */
 	-o-transform: rotate(var(--rotate)); 	/* Opera */
+	line-height: 1;
 }
 
 .position-watermark.left-top {
@@ -101,6 +102,7 @@
 	-moz-transform: rotate(var(--rotate)); 	/* Firefox */
 	-webkit-transform: rotate(var(--rotate)); /* Safari 和 Chrome */
 	-o-transform: rotate(var(--rotate)); 	/* Opera */
+	line-height: 1;
 }
 
 .repeat-watermark .row .col.first-col {

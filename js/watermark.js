@@ -16,27 +16,29 @@
 	 * 文本水印
 	 */
 	function TextWatermark(element, settings) {
-		Watermark.apply(this, arguments);
-		this.text = settings.text;
-		this.color = settings.color;
-		this.fontFamily = settings.fontFamily;
-		this.fontSize = settings.fontSize;
+		let defaultSettings = getDefaultSettings.call(this, settings);
+		Watermark.call(this, element, defaultSettings);
+		this.text = defaultSettings.text;
+		this.color = defaultSettings.color;
+		this.fontFamily = defaultSettings.fontFamily;
+		this.fontSize = defaultSettings.fontSize;
 	}
 	TextWatermark.prototype = {
 		extendStyle : function() {
-			let textWidth = getTextWidth(this.text, this.fontSize + ' ' + this.fontFamily, this.style.rotate) + 'px';
-			let textHeight = textWidth;
+			let textWidthAndHeight = getTextWidthAndHeight(this.text, this.fontSize, this.fontFamily);
 			watermarkCss.set('--color', this.color);
 			watermarkCss.set('--font-family', this.fontFamily);
 			watermarkCss.set('--font-size', this.fontSize);
-			watermarkCss.set('--watermark-width', textWidth);
-			watermarkCss.set('--watermark-height', textHeight);
+			watermarkCss.set('--watermark-width', textWidthAndHeight[0] + 'px');
+			watermarkCss.set('--watermark-height', textWidthAndHeight[1] + 'px');
 			if (this.style instanceof RepeatWatermarkStyle) {
-				let textWidthNum = getNumberWithoutPx(textWidth);
+				let textWidthNum = getNumberWithoutPx(textWidthAndHeight[0]);
 				let xOffsetNum = Math.abs(getNumberWithoutPx(this.style.xOffset));
 				let xSpaceNum = Math.abs(getNumberWithoutPx(this.style.xSpace));
 				let repeatRowWidthNum = (textWidthNum + xOffsetNum + xSpaceNum) * this.style.cols;
 				watermarkCss.set('--repeat-row-width', repeatRowWidthNum + 'px');
+				watermarkCss.set('--x-space', textWidthAndHeight[1] + 'px');
+				watermarkCss.set('--y-space', textWidthAndHeight[1] + 'px');
 			}
 		},
 		_create : function() {
@@ -67,10 +69,11 @@
 	 * TODO 图片水印
 	 */
 	function ImageWatermark(element, settings) {
-		Watermark.apply(this, arguments);
-		this.imagePath = settings.imagePath;
-		this.width = settings.width;
-		this.height = settings.height;
+		let defaultSettings = getDefaultSettings.call(this, settings);
+		Watermark.call(this, element, defaultSettings);
+		this.imagePath = defaultSettings.imagePath;
+		this.width = defaultSettings.width;
+		this.height = defaultSettings.height;
 	}
 	ImageWatermark.prototype = {
 		extendStyle : function() {
@@ -173,17 +176,24 @@
 	 * 获取文本宽度高度
 	 * 
 	 * @param text 文本
-	 * @param font 字体（例如：normal 20px 楷体）
-	 *
+	 * @param fontSize 字体大小
+	 * @param fontFamily 字体名
+	 * @param widthToHeightRatio 宽高比例（）
 	 */
-	function getTextWidth(text, font, rotate) {
+	function getTextWidthAndHeight(text, fontSize, fontFamily) {
+		let textArray = text.split(/<br\/?>/);
+		let maxText = textArray[0];
+		for (let i = 0; i < textArray.length; i++) {
+			maxText = maxText.length > textArray[i].length ? maxText : textArray[i];
+		}
 		// re-use canvas object for better performance
-		let canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-		let context = canvas.getContext("2d"); 
-		context.font = font;
-		context.rotate = rotate;
-		let metrics = context.measureText(text);
-		return metrics.width;
+		let canvas = getTextWidthAndHeight.canvas || (getTextWidthAndHeight.canvas = document.createElement('canvas'));
+		let context = canvas.getContext('2d'); 
+		context.font = fontSize + ' ' + fontFamily;
+		let metrics = context.measureText(maxText);
+		let width = metrics.width;
+		let height = getNumberWithoutPx(fontSize) * textArray.length;
+		return new Array(width, height);
 	}
 
 	/*
@@ -200,15 +210,20 @@
 	}
 
 	/*
-	 * 默认配置
+	 * 默认配置（用 Watermark 对象调用该方法）
 	 */
-	let setDefaultSettings = function(settings) {
-		let defaultSettings = settings;
+	function getDefaultSettings(settings) {
+		let defaultSettings = settings ? settings : (settings = { style : 'position' });
 		if (this instanceof TextWatermark) {
-			if (this.style instanceof PositionWatermarkStyle) {
+			if (settings.style === 'position') {
 				defaultSettings = Object.assign(POSITION_TEXT_WATERMARK_SETTINGS, settings);
+			} else if (settings.style === 'repeat') {
+				defaultSettings = Object.assign(REPEAT_TEXT_WATERMARK_SETTINGS, settings);
 			}
+		} else if (this instanceof ImageWatermark) {
+			// TODO
 		}
+		return defaultSettings;
 	};
 
 	// 固定位置文本水印默认配置
