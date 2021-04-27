@@ -1,90 +1,108 @@
 /*
+ * 网页水印
+ *
  * @author lihaitao
  * @date 2021/4/26
  */
 @charset "utf-8";
 
 :root {
-  --color: gray;
-  --opacity: 0.5;
-  --width: 64px;
-  --height: 23px;
+  --color: '';
+  --opacity: '';
+  --rotate: '';
+  --watermark-width: '';
+  --watermark-height: '';
+  --font-family: '';
+  --font-size: '';
+  --x-offset: '';
+  --y-offset: '';
+  --x-space: '';
+  --y-space: '';
+  --repeat-row-width: '';
 }
 
-.watermark {
+.watermark-layer {
 	width: 100%;
 	height: 100%;
 	padding: 0;
 	margin: 0;
+	font-family: var(--font-family);
+	font-size: var(--font-size);
+	overflow: hidden;
 }
 
 /* 固定位置水印 */
 
 .position-watermark {
     display: inline-block;
-    width: var(--width);
-    height: var(--height);
+    width: var(--watermark-width);
+    height: var(--watermark-height);
     color: var(--color);
     opacity: var(--opacity);
     position: absolute;
     z-index: 9999;
+    transform: rotate(var(--rotate));
+	-ms-transform: rotate(var(--rotate)); 	/* IE 9 */
+	-moz-transform: rotate(var(--rotate)); 	/* Firefox */
+	-webkit-transform: rotate(var(--rotate)); /* Safari 和 Chrome */
+	-o-transform: rotate(var(--rotate)); 	/* Opera */
 }
 
 .position-watermark.left-top {
-    left: 20px;
-    top: 20px;
+    left: var(--x-offset);
+    top: var(--y-offset);
 }
 
 .position-watermark.left-bottom {
-    left: 20px;
-    bottom: 20px;
+    left: var(--x-offset);
+    bottom: var(--y-offset);
 }
 
 .position-watermark.right-top {
-    right: 20px;
-    top: 20px;
+    right: var(--x-offset);
+    top: var(--y-offset);
 }
 
 .position-watermark.right-bottom {
-    right: 20px;
-    bottom: 20px;
+    right: var(--x-offset);
+    bottom: var(--y-offset);
 }
 
 .position-watermark.center {
-    left: calc(50% - var(--width) / 2);
-    top: calc(50% - var(--height) / 2);
+    left: calc(50% - var(--watermark-width) / 2);
+    top: calc(50% - var(--watermark-height) / 2);
 }
 
 /* 重复水印 */
 
 .repeat-watermark {
 	opacity: var(--opacity);
-	margin-left: -20px;
+	overflow: hidden;
 }
 
 .repeat-watermark .row {
 	display: inline-block;
-	margin-top: 50px;
-	height: var(--width);
-	width: 100%;
+	margin-top: var(--y-space);
+	width: var(--repeat-row-width);
 }
 
 .repeat-watermark .row.first-row {
-	margin-top: 0;
+	margin-top: var(--y-offset);
 }
 
 .repeat-watermark .row .col {
 	display: inline-block;
-	height: var(--width);
-	margin-left: 30px;
-	color: gray;
-	transform:rotate(-36deg);
-	-ms-transform:rotate(-36deg); 	/* IE 9 */
-	-moz-transform:rotate(-36deg); 	/* Firefox */
-	-webkit-transform:rotate(-36deg); /* Safari 和 Chrome */
-	-o-transform:rotate(-36deg); 	/* Opera */
+	width: var(--watermark-width);
+	height: var(--watermark-height);
+	margin-left: var(--x-space);
+	color: var(--color);
+	transform: rotate(var(--rotate));
+	-ms-transform: rotate(var(--rotate)); 	/* IE 9 */
+	-moz-transform: rotate(var(--rotate)); 	/* Firefox */
+	-webkit-transform: rotate(var(--rotate)); /* Safari 和 Chrome */
+	-o-transform: rotate(var(--rotate)); 	/* Opera */
 }
 
 .repeat-watermark .row .col.first-col {
-	margin-left: 0;
+	margin-left: var(--x-offset);
 }
