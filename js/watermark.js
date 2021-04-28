@@ -35,10 +35,12 @@
 				let textWidthNum = getNumberWithoutPx(textWidthAndHeight[0]);
 				let xOffsetNum = Math.abs(getNumberWithoutPx(this.style.xOffset));
 				let xSpaceNum = Math.abs(getNumberWithoutPx(this.style.xSpace));
-				let repeatRowWidthNum = (textWidthNum + xOffsetNum + xSpaceNum) * this.style.cols;
+				let repeatRowWidthNum = (textWidthNum + xOffsetNum + xSpaceNum) * this.style.cols * 1.2;
 				watermarkCss.set('--repeat-row-width', repeatRowWidthNum + 'px');
-				watermarkCss.set('--x-space', textWidthAndHeight[1] + 'px');
-				watermarkCss.set('--y-space', textWidthAndHeight[1] + 'px');
+				let oldXSpace = getNumberWithoutPx(watermarkCss.get('--x-space'));
+				let oldYSpace = getNumberWithoutPx(watermarkCss.get('--y-space'));
+				watermarkCss.set('--x-space', Math.max(textWidthAndHeight[1], oldXSpace) + 'px');
+				watermarkCss.set('--y-space', Math.max(textWidthAndHeight[1], oldYSpace) + 'px');
 			}
 		},
 		_create : function() {
@@ -169,7 +171,12 @@
 			var r = document.querySelector(':root');
 			r.style.setProperty(key, value);
 		},
-		get : undefined
+		get : function(key) {
+			var r = document.querySelector(':root');
+			// Get the styles (properties and values) for the root
+  			var rs = getComputedStyle(r);
+  			return rs.getPropertyValue(key);
+		}
 	};
 
 	/*
