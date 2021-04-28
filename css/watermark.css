@@ -29,6 +29,8 @@
 	font-family: var(--font-family);
 	font-size: var(--font-size);
 	overflow: hidden;
+	z-index: 9999;
+	position: fixed;
 }
 
 /* 固定位置水印 */
@@ -40,7 +42,6 @@
     color: var(--color);
     opacity: var(--opacity);
     position: absolute;
-    z-index: 9999;
     transform: rotate(var(--rotate));
 	-ms-transform: rotate(var(--rotate)); 	/* IE 9 */
 	-moz-transform: rotate(var(--rotate)); 	/* Firefox */

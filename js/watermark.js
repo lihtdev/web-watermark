@@ -35,7 +35,7 @@
 				let textWidthNum = getNumberWithoutPx(textWidthAndHeight[0]);
 				let xOffsetNum = Math.abs(getNumberWithoutPx(this.style.xOffset));
 				let xSpaceNum = Math.abs(getNumberWithoutPx(this.style.xSpace));
-				let repeatRowWidthNum = (textWidthNum + xOffsetNum + xSpaceNum) * this.style.cols * 1.2;
+				let repeatRowWidthNum = (textWidthNum + xOffsetNum + xSpaceNum) * this.style.cols * 2;
 				watermarkCss.set('--repeat-row-width', repeatRowWidthNum + 'px');
 				let oldXSpace = getNumberWithoutPx(watermarkCss.get('--x-space'));
 				let oldYSpace = getNumberWithoutPx(watermarkCss.get('--y-space'));
@@ -200,7 +200,7 @@
 		let metrics = context.measureText(maxText);
 		let width = metrics.width;
 		let height = getNumberWithoutPx(fontSize) * textArray.length;
-		return [width, height];
+		return [width, Math.max(height, width / 2)];
 	}
 
 	/*
