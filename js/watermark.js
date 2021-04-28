@@ -39,8 +39,9 @@
 				watermarkCss.set('--repeat-row-width', repeatRowWidthNum + 'px');
 				let oldXSpace = getNumberWithoutPx(watermarkCss.get('--x-space'));
 				let oldYSpace = getNumberWithoutPx(watermarkCss.get('--y-space'));
-				watermarkCss.set('--x-space', Math.max(textWidthAndHeight[1], oldXSpace) + 'px');
-				watermarkCss.set('--y-space', Math.max(textWidthAndHeight[1], oldYSpace) + 'px');
+				let xSpaceAndYSpace = computeXSpaceAndYSpace(textWidthAndHeight[0], textWidthAndHeight[1]);
+				watermarkCss.set('--x-space', Math.max(xSpaceAndYSpace[0], oldXSpace) + 'px');
+				watermarkCss.set('--y-space', Math.max(xSpaceAndYSpace[1], oldYSpace) + 'px');
 			}
 		},
 		_create : function() {
@@ -180,43 +181,6 @@
 	};
 
 	/*
-	 * 获取文本宽度高度
-	 * 
-	 * @param text 文本
-	 * @param fontSize 字体大小
-	 * @param fontFamily 字体名
-	 * @param widthToHeightRatio 宽高比例（）
-	 */
-	function getTextWidthAndHeight(text, fontSize, fontFamily) {
-		let textArray = text.split(/<br\/?>/);
-		let maxText = textArray[0];
-		for (let i = 0; i < textArray.length; i++) {
-			maxText = maxText.length > textArray[i].length ? maxText : textArray[i];
-		}
-		// re-use canvas object for better performance
-		let canvas = getTextWidthAndHeight.canvas || (getTextWidthAndHeight.canvas = document.createElement('canvas'));
-		let context = canvas.getContext('2d'); 
-		context.font = fontSize + ' ' + fontFamily;
-		let metrics = context.measureText(maxText);
-		let width = metrics.width;
-		let height = getNumberWithoutPx(fontSize) * textArray.length;
-		return [width, Math.max(height, width / 2)];
-	}
-
-	/*
-	 * 获取不带px的数字
-	 */
-	function getNumberWithoutPx(value) {
-		if (typeof value === 'number') {
-			return value;
-		}
-		if (typeof value === 'string' && value.endsWith('px')) {
-			return value.substring(0, value.length - 2);
-		}
-		return 0;
-	}
-
-	/*
 	 * 默认配置（用 Watermark 对象调用该方法）
 	 */
 	function getDefaultSettings(settings) {
@@ -231,6 +195,49 @@
 			// TODO
 		}
 		return defaultSettings;
+	}
+
+	/*
+	 * 获取文本宽度和高度
+	 */
+	function getTextWidthAndHeight(text, fontSize, fontFamily) {
+		let textArray = text.split(/<br\/?>/);
+		let maxText = textArray[0];
+		for (let i = 0; i < textArray.length; i++) {
+			maxText = maxText.length > textArray[i].length ? maxText : textArray[i];
+		}
+		// re-use canvas object for better performance
+		let canvas = getTextWidthAndHeight.canvas || (getTextWidthAndHeight.canvas = document.createElement('canvas'));
+		let context = canvas.getContext('2d'); 
+		context.font = fontSize + ' ' + fontFamily;
+		let metrics = context.measureText(maxText);
+		let width = metrics.width;
+		let height = getNumberWithoutPx(fontSize) * textArray.length;
+		return [width, height];
+	}
+
+	/*
+	 * 计算x轴间距和y轴间距
+	 */
+	function computeXSpaceAndYSpace(width, height) {
+		if (width / height < 10) {
+			return [width, width]
+		} else {
+			return [width, width / 2]
+		}
+	}
+
+	/*
+	 * 获取不带px的数字
+	 */
+	function getNumberWithoutPx(value) {
+		if (typeof value === 'number') {
+			return value;
+		}
+		if (typeof value === 'string' && value.endsWith('px')) {
+			return value.substring(0, value.length - 2);
+		}
+		return 0;
 	}
 
 	// 固定位置文本水印默认配置
@@ -259,9 +266,9 @@
 		rows : 20, // 行数
 		cols : 30, // 列数
 		xSpace : '30px', // x轴间距
-		ySpace : '50px', // y轴间距
-		xOffset : '-20px', // x轴偏移量
-		yOffset : '20px' // y轴偏移量
+		ySpace : '30px', // y轴间距
+		xOffset : '-30px', // x轴偏移量
+		yOffset : '30px' // y轴偏移量
 	};
 
 })();
