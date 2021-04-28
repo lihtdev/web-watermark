@@ -97,11 +97,11 @@
 			if (typeof this.extendStyle === 'function') {
 				this.extendStyle();
 			}
-		},
+		};
 		this.create = function() {
 			this.useStyle();
 			this._create();
-		}
+		};
 	}
 
 	/*
@@ -125,7 +125,7 @@
 	RepeatWatermarkStyle.prototype.extend = function() {
 		watermarkCss.set('--x-space', this.xSpace);
 		watermarkCss.set('--y-space', this.ySpace);
-	}
+	};
 
 	/*
 	 * 水印样式父类
@@ -143,7 +143,7 @@
 			if (typeof this.extend === 'function') {
 				this.extend();
 			}
-		}
+		};
 	}
 
 	/*
@@ -168,13 +168,13 @@
 	 */
 	let watermarkCss = {
 		set : function(key, value) {
-			var r = document.querySelector(':root');
+			let r = document.querySelector(':root');
 			r.style.setProperty(key, value);
 		},
 		get : function(key) {
-			var r = document.querySelector(':root');
+			let r = document.querySelector(':root');
 			// Get the styles (properties and values) for the root
-  			var rs = getComputedStyle(r);
+  			let rs = getComputedStyle(r);
   			return rs.getPropertyValue(key);
 		}
 	};
@@ -200,7 +200,7 @@
 		let metrics = context.measureText(maxText);
 		let width = metrics.width;
 		let height = getNumberWithoutPx(fontSize) * textArray.length;
-		return new Array(width, height);
+		return [width, height];
 	}
 
 	/*
@@ -210,7 +210,7 @@
 		if (typeof value === 'number') {
 			return value;
 		}
-		if (typeof value === 'string' && value.match('px$')) {
+		if (typeof value === 'string' && value.endsWith('px')) {
 			return value.substring(0, value.length - 2);
 		}
 		return 0;
@@ -231,7 +231,7 @@
 			// TODO
 		}
 		return defaultSettings;
-	};
+	}
 
 	// 固定位置文本水印默认配置
 	let POSITION_TEXT_WATERMARK_SETTINGS = {
